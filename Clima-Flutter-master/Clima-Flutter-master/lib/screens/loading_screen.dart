@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:clima/services/location.dart';
 
-// Allows me to access the package by using the variable http.
-// The benefit of this is that it's more clear what package I'm using.
-import 'package:http/http.dart' as http;
+import '../services/networking.dart';
+
+const apiKey = '968d6abc89bba369ae34cbed22f8eada';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -12,36 +12,58 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
+  double latitude;
+  double longitude;
+
   @override
   void initState() {
     super.initState();
-    getLocation();
+    getLocationData();
   }
 
   // Returns the current user's location
-  void getLocation() async {
+  void getLocationData() async {
     Location location = Location();
 //    Need await because you need to wait to get the latitude and longitude values before printing them.
     await location.getCurrentLocation();
-    print(location.latitude);
-    print(location.longitude);
+    latitude = location.latitude;
+    longitude = location.longitude;
+    print(latitude);
+    print(longitude);
+
+    NetworkHelper helper = NetworkHelper(
+        url:
+            'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey');
+
+    var weatherData = await helper.getData();
   }
 
   // Makes an API call to OpenWeatherMap to get weather information.
-  void getData() async {
-    http.Response response = await http.get(
-        'https://samples.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=b6907d289e10d714a6e88b30761fae22');
-    if (response.statusCode == 200) {
-      String data = response.body;
-      print(data);
-    } else {
-      print(response.statusCode);
-    }
-  }
+//  void getData() async {
+//    http.Response response = await http.get(
+////      This is the get endpoint
+//        'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey');
+//    if (response.statusCode == 200) {
+//      String data = response.body;
+////      print(data);
+////      Look at the endpoint above for a better idea as to what's going on.
+////      This sets the variable longitude equal to the JSON value of lon from the get endpoint.
+//      double longitude = jsonDecode(data)['coord']['lon'];
+//      print(longitude);
+//
+////      Similar to the Decode above. However because weather has a list, you need to index which list you want.
+//      String description = jsonDecode(data)['weather'][0]['description'];
+//      print(description);
+//
+
+//    } else {
+//      print(response.statusCode);
+//      print(response.body);
+//    }
+//  }
 
   @override
   Widget build(BuildContext context) {
-    getData();
     return Scaffold();
   }
 }

@@ -2,11 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:clima/utilities/constants.dart';
 
 class LocationScreen extends StatefulWidget {
+  LocationScreen({this.locationWeather});
+
+  final locationWeather;
   @override
   _LocationScreenState createState() => _LocationScreenState();
 }
 
 class _LocationScreenState extends State<LocationScreen> {
+  double temperature;
+  String tempAsFixed;
+  int condition;
+  String cityName;
+
+  // Need initState() here in order to get access to the locationWeather above.
+  // You wouldn't have access to the widget variable outside initState()
+  @override
+  void initState() {
+    super.initState();
+
+    updateUI(widget.locationWeather);
+  }
+
+  void updateUI(dynamic weatherData) {
+    temperature = weatherData['main']['temp'];
+    tempAsFixed = temperature.toStringAsFixed(1);
+    condition = weatherData['weather'][0]['id'];
+    cityName = weatherData['name'];
+
+    print('Temp: $temperature');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +75,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 child: Row(
                   children: <Widget>[
                     Text(
-                      '32°',
+                      '$tempAsFixed°',
                       style: kTempTextStyle,
                     ),
                     Text(

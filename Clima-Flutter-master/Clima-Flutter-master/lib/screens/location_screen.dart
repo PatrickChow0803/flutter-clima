@@ -29,6 +29,15 @@ class _LocationScreenState extends State<LocationScreen> {
 
   void updateUI(dynamic weatherData) {
     setState(() {
+      // Edgecase for if the app isn't able to get the weather.
+      if (weatherData == null) {
+        temperature = 0;
+        weatherIcon = 'Error';
+        message = 'Unable to get weather data';
+        cityName = '';
+        return;
+      }
+
       temperature = weatherData['main']['temp'];
       tempAsFixed = temperature.toStringAsFixed(1);
       var condition = weatherData['weather'][0]['id'];
@@ -63,7 +72,11 @@ class _LocationScreenState extends State<LocationScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      // Need await here because I want to wait for getlocationWeather to complete before calling updateUI
+                      var weatherData = await weather.getLocationWeather();
+                      updateUI(weatherData);
+                    },
                     child: Icon(
                       Icons.near_me,
                       size: 50.0,

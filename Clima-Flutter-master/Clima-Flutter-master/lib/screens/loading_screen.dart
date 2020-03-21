@@ -1,13 +1,9 @@
 import 'package:clima/screens/location_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:clima/services/location.dart';
 import 'location_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
-import '../services/networking.dart';
-
-const apiKey = '968d6abc89bba369ae34cbed22f8eada';
+import 'package:clima/services/weather.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -26,15 +22,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   // Returns the current user's location
   void getLocationData() async {
-    Location location = Location();
-//    Need await because you need to wait to get the latitude and longitude values before printing them.
-    await location.getCurrentLocation();
-
-    NetworkHelper helper = NetworkHelper(
-        url:
-            'https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=imperial');
-
-    var weatherData = await helper.getData();
+    WeatherModel weatherModel = WeatherModel();
+    // Need to use await because getLocationWeather() is of Future
+    var weatherData = await weatherModel.getLocationWeather();
 
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return LocationScreen(

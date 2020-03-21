@@ -1,6 +1,9 @@
+import 'package:clima/screens/location_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:clima/services/location.dart';
+import 'location_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../services/networking.dart';
 
@@ -36,9 +39,25 @@ class _LoadingScreenState extends State<LoadingScreen> {
             'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey');
 
     var weatherData = await helper.getData();
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return LocationScreen();
+    }));
   }
 
-  // Makes an API call to OpenWeatherMap to get weather information.
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: SpinKitDoubleBounce(
+          color: Colors.white,
+          size: 100.0,
+        ),
+      ),
+    );
+  }
+}
+// Makes an API call to OpenWeatherMap to get weather information.
 //  void getData() async {
 //    http.Response response = await http.get(
 ////      This is the get endpoint
@@ -61,9 +80,3 @@ class _LoadingScreenState extends State<LoadingScreen> {
 //      print(response.body);
 //    }
 //  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold();
-  }
-}

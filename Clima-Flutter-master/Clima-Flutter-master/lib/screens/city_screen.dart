@@ -33,7 +33,16 @@ class _CityScreenState extends State<CityScreen> {
               ),
               Container(
                 padding: EdgeInsets.all(20.0),
-                child: null,
+                child: TextField(
+                  // onChanged is called each time the TextField's input is changed
+                  onChanged: (value) {
+                    print(value);
+                  },
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                  decoration: kTextFieldInputDecoration,
+                ),
               ),
               FlatButton(
                 onPressed: () {},

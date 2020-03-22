@@ -84,8 +84,10 @@ class _LocationScreenState extends State<LocationScreen> {
                     ),
                   ),
                   FlatButton(
-                    onPressed: () {
-                      Navigator.push(
+                    // Need await here because .push has a return type of future.
+                    // This flatbutton navigates to a new screen hoping to receive input back from it.
+                    onPressed: () async {
+                      var typedName = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) {
@@ -93,6 +95,12 @@ class _LocationScreenState extends State<LocationScreen> {
                           },
                         ),
                       );
+                      print(typedName);
+                      if (typedName != null) {
+                        var weatherData =
+                            await weather.getCityWeather(typedName);
+                        updateUI(weatherData);
+                      }
                     },
                     child: Icon(
                       Icons.location_city,
@@ -119,7 +127,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: EdgeInsets.only(right: 15.0),
                 child: Text(
-                  "$message",
+                  "$message in $cityName",
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),

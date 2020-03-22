@@ -5,6 +5,15 @@ const apiKey = '968d6abc89bba369ae34cbed22f8eada';
 const openWeatherMapURL = 'https://api.openweathermap.org/data/2.5/weather';
 
 class WeatherModel {
+  Future<dynamic> getCityWeather(String cityName) async {
+    var url = '$openWeatherMapURL?q=$cityName&appid=$apiKey&units=imperial';
+    NetworkHelper networkHelper = NetworkHelper(url: url);
+
+    // Need await here because getData() is async
+    var weatherData = await networkHelper.getData();
+    return weatherData;
+  }
+
   // Need future for the return type because of all the async calls.
   // It's dynamic because that's the data type of weatherData
   Future<dynamic> getLocationWeather() async {
